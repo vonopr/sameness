@@ -4,6 +4,7 @@
 % ---------- required packages ----------
 \RequirePackage{pgfopts}   % for key‑value package options
 \RequirePackage{fontspec}  % for system font loading
+\RequirePackage{framed}    % for vertical rule on the left of the chart
 
 % ---------- boolean switches (must be defined before option processing) ----------
 \newif\ifSAMENESSdemo
@@ -169,6 +170,8 @@
 
 % ---------- sameness environment ----------
 \newenvironment{sameness}{%
+  \def\FrameCommand{{\vrule width 0.5pt} \hspace{0pt}}
+  \MakeFramed {\advance\hsize-\width \FrameRestore}
   \par\noindent
   \SAMENESS@exprfont@switch          % expression font (switch)
   \SAMENESS@exprfont@size
@@ -182,7 +185,6 @@
   \let\old@nl\\%
   \renewcommand{\\}[1][\z@skip]{%
     \old@nl[##1]%
-    \vbar\,%
     \hskip\samelineindent\relax
     \ignorespaces
   }%
@@ -208,7 +210,6 @@
       \fi
       \hspace{0.5em}%
     }%
-    \vbar\,%
     \ignorespaces
   }%
   % define \comment
@@ -222,15 +223,14 @@
   }%
   \ignorespaces
 }{%
-  \par
+  \endMakeFramed
 }
 
 % ---------- built‑in demo ----------
 \AtBeginDocument{%
   \ifSAMENESSdemo
     % Provide only the minimal commands the demo needs.
-    % If you already defined them (e.g. \num, \vbar), these will be skipped.
-    \providecommand{\vbar}{\rule[-0.9mm]{0.15ex}{\baselineskip} \;}
+    % If you already defined them (e.g. \num), these will be skipped.
     \providecommand{\num}[1]{{\texttt{#1}\/}}  % uses the environment’s current font
     \providecommand{\add}[1]{\constructor{add}\hspace*{-1pt}\texttt{1}}
     \providecommand{\zero}{\constructor{zero}}
