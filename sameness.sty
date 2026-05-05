@@ -8,9 +8,9 @@
 
 % ---------- boolean switches (must be defined before option processing) ----------
 \newif\ifSAMENESSdemo
-\newif\ifSAMENESSunicode
+\newif\ifSAMENESSunicodesup
 \SAMENESSdemofalse
-\SAMENESSunicodefalse
+\SAMENESSunicodesupfalse
 
 % ---------- internal font helpers ----------
 \newcommand\SAMENESS@declare@font[2]{%
@@ -55,10 +55,10 @@
   demo/true/.code  = \SAMENESSdemotrue,
   demo/false/.code = \SAMENESSdemofalse,
   demo/.default    = true,
-  unicode/.is choice,
-  unicode/true/.code  = \SAMENESSunicodetrue,
-  unicode/false/.code = \SAMENESSunicodefalse,
-  unicode/.default    = true,
+  unicodesup/.is choice,
+  unicodesup/true/.code  = \SAMENESSunicodesuptrue,
+  unicodesup/false/.code = \SAMENESSunicodesupfalse,
+  unicodesup/.default    = true,
   % Spacing between steps
   stepskip/.store in = \SAMENESS@stepskip,
   stepskip           = {1ex plus 0.5ex},
@@ -209,13 +209,13 @@
     \leavevmode
     \llap{%
       \ifx##1\@empty
-        \ifSAMENESSunicode
+        \ifSAMENESSunicodesup
           \SAMENESS@supernumber{\arabic{sameline}}%
         \else
           \textsuperscript{\arabic{sameline}}%
         \fi
       \else
-        \ifSAMENESSunicode
+        \ifSAMENESSunicodesup
           \SAMENESS@supernumber{##1}%
         \else
           \textsuperscript{##1}%
