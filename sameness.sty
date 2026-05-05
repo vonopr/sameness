@@ -7,9 +7,7 @@
 \RequirePackage{framed}    % for vertical rule on the left of the chart
 
 % ---------- boolean switches (must be defined before option processing) ----------
-\newif\ifSAMENESSdemo
 \newif\ifSAMENESSunicodesup
-\SAMENESSdemofalse
 \SAMENESSunicodesupfalse
 
 % ---------- internal font helpers ----------
@@ -51,10 +49,6 @@
 \pgfkeys{
   /sameness/.cd,
   % Boolean toggles
-  demo/.is choice,
-  demo/true/.code  = \SAMENESSdemotrue,
-  demo/false/.code = \SAMENESSdemofalse,
-  demo/.default    = true,
   unicodesup/.is choice,
   unicodesup/true/.code  = \SAMENESSunicodesuptrue,
   unicodesup/false/.code = \SAMENESSunicodesupfalse,
@@ -241,49 +235,47 @@
 }
 
 % ---------- built‑in demo ----------
-\AtBeginDocument{%
-  \ifSAMENESSdemo
-    \begingroup
-    % ---- local fallback definitions (only if not already defined) ----
-    \providecommand{\num}[1]{{\texttt{#1}\/}}  % uses the environment’s current font
-    \providecommand{\add}[1]{\constructor{add}\hspace*{-1pt}\texttt{1}}
-    \providecommand{\zero}{\constructor{zero}}
-    \providecommand{\whichNat}{\func{which-Nat}}
-    \providecommand{\step}[1]{\func{step-#1}}
-    \providecommand{\constructor}[1]{{\textsf{#1}}}
-    \providecommand{\func}[1]{{\textbf{#1}} }
-    \providecommand{\nodef}[1]{{\textbf{\textit{#1}}}}
-    \providecommand{\type}[1]{{\textsf{#1}}}
-    \providecommand{\var}[1]{{\textsf{\textit{#1}}}}
-    \providecommand{\rem}[1]{{\it\footnotesize\schoolbookfont \# #1}}% not used, but for safety
+\newcommand{\samenessdemo}{%
+  \begingroup
+  % ---- local fallback definitions (only if not already defined) ----
+  \providecommand{\num}[1]{{\texttt{##1}\/}}  % uses the environment’s current font
+  \providecommand{\add}[1]{\constructor{add}\hspace*{-1pt}\texttt{1}}
+  \providecommand{\zero}{\constructor{zero}}
+  \providecommand{\whichNat}{\func{which-Nat}}
+  \providecommand{\step}[1]{\func{step-##1}}
+  \providecommand{\constructor}[1]{{\textsf{##1}}}
+  \providecommand{\func}[1]{{\textbf{##1}} }
+  \providecommand{\nodef}[1]{{\textbf{\textit{##1}}}}
+  \providecommand{\type}[1]{{\textsf{##1}}}
+  \providecommand{\var}[1]{{\textsf{\textit{##1}}}}
+  \providecommand{\rem}[1]{{\it\footnotesize\schoolbookfont \# ##1}}% not used, but for safety
 
-    \begin{sameness}
-        \same (+ \num2 \num4)
-        \same (\whichNat \num2 \num4 \step{+}) \comment{expand definition of +}
-        \same (\whichNat (\add1 \add1 \zero) \step{+}) \comment{expand normal form of 2}
-        \same[4] (\step{+} \\
-            \indentmore (\whichNat \num4 (\add1 \zero) \step{+}))
-            \comment{apply 2nd Commandment of iter-Nat}
-        \same (\add1 \\
-            \indentmore (\whichNat \num4 (\add1 \zero) \step{+}))
-            \comment{apply definition of step-+ and arg to $\lambda$-expression}
-        \same[6] (\add1 \\
-            \indentmore (\step{+} \\
-                \indentmore (\whichNat \num4 {\zero} \step{+})))
-            \comment{apply 2nd Commandment of iter-Nat}
-        \same (\add1 \\
-            \indentmore (\add1 \\
-                \indentmore (\whichNat \num4 {\zero} \step{+})))
-            \comment{apply definition of step-+ and arg to $\lambda$-expression}
-        \same[8] (\add1 \\
-            \indentmore (\add1 \\
-                \indentmore \num4 ))
-            \comment{apply 1st Commandment of iter-Nat}
-        \same[9] \num6
-            \comment{common human-readable representation of \add1...\add1 (6 times) zero}
-        \same[1234] \num6
-            \comment{test a 4-digit line number}
-    \end{sameness}
-    \endgroup
-  \fi
+  \begin{sameness}
+      \same (+ \num2 \num4)
+      \same (\whichNat \num2 \num4 \step{+}) \comment{expand definition of +}
+      \same (\whichNat (\add1 \add1 \zero) \step{+}) \comment{expand normal form of 2}
+      \same[4] (\step{+} \\
+          \indentmore (\whichNat \num4 (\add1 \zero) \step{+}))
+          \comment{apply 2nd Commandment of iter-Nat}
+      \same (\add1 \\
+          \indentmore (\whichNat \num4 (\add1 \zero) \step{+}))
+          \comment{apply definition of step-+ and arg to $\lambda$-expression}
+      \same[6] (\add1 \\
+          \indentmore (\step{+} \\
+              \indentmore (\whichNat \num4 {\zero} \step{+})))
+          \comment{apply 2nd Commandment of iter-Nat}
+      \same (\add1 \\
+          \indentmore (\add1 \\
+              \indentmore (\whichNat \num4 {\zero} \step{+})))
+          \comment{apply definition of step-+ and arg to $\lambda$-expression}
+      \same[8] (\add1 \\
+          \indentmore (\add1 \\
+              \indentmore \num4 ))
+          \comment{apply 1st Commandment of iter-Nat}
+      \same[9] \num6
+          \comment{common human-readable representation of \add1...\add1 (6 times) zero}
+      \same[1234] \num6
+          \comment{test a 4-digit line number}
+  \end{sameness}
+  \endgroup
 }
