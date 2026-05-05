@@ -68,6 +68,12 @@
   % Thickness of the rule
   rulethickness/.store in = \SAMENESS@rulethickness,
   rulethickness           = 0.75pt,
+  % Spacing between the vertical rule and text body
+  rulesep/.store in = \SAMENESS@rulesep,
+  rulesep          = 0.5em,
+  % Extra spacing for each indentation level
+  indentstep/.store in = \SAMENESS@indentstep,
+  indentstep           = 1em,
   %
   % Expression font
   % shortcut: exprfont = Family Name  →  sets family only
@@ -132,12 +138,12 @@
 \samelineindent=0pt
 
 \newcommand\indentmore{%
-  \hskip 1em\relax               % immediate space
-  \global\advance\samelineindent by 1em
+  \hskip \SAMENESS@indentstep\relax       % immediate space
+  \global\advance\samelineindent by \SAMENESS@indentstep\relax
 }
 \newcommand\indentless{%
-  \hskip -1em\relax
-  \global\advance\samelineindent by -1em
+  \hskip -\SAMENESS@indentstep\relax
+  \global\advance\samelineindent by -\SAMENESS@indentstep\relax
 }
 
 % ---------- step counter ----------
@@ -177,7 +183,7 @@
 
 % ---------- sameness environment ----------
 \newenvironment{sameness}{%
-  \def\FrameCommand{{\vrule width \SAMENESS@rulethickness} \hspace{0pt}}
+  \def\FrameCommand{{\vrule width \SAMENESS@rulethickness} \hspace{\SAMENESS@rulesep}}
   \MakeFramed {\advance\hsize-\width \FrameRestore}
   \par\noindent
   \SAMENESS@exprfont@switch          % expression font (switch)
@@ -216,6 +222,7 @@
         \fi
       \fi
       \hspace{\SAMENESS@numbergap}%
+      \hspace{\SAMENESS@rulesep}% Compensate shift of the body text
     }%
     \ignorespaces
   }%
