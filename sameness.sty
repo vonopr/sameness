@@ -58,6 +58,9 @@
   unicode/true/.code  = \SAMENESSunicodetrue,
   unicode/false/.code = \SAMENESSunicodefalse,
   unicode/.default    = true,
+  % Spacing between steps
+  stepskip/.initial = {2pt plus 1pt},
+  stepskip/.store in   = \SAMENESS@stepskip,
   % Expression font
   % shortcut: exprfont = Family Name  →  sets family only
   exprfont/.style = {/sameness/exprfont/family={#1}},
@@ -119,6 +122,7 @@
 % ---------- indent control ----------
 \newdimen\samelineindent
 \samelineindent=0pt
+
 \newcommand\indentmore{%
   \hskip 1em\relax               % immediate space
   \global\advance\samelineindent by 1em
@@ -172,7 +176,7 @@
   \raggedright
   \setlength{\rightskip}{0pt plus 1fil}%
   \setlength{\parindent}{0pt}%
-  \setlength{\parskip}{0pt}%
+  \setlength{\parskip}{\SAMENESS@stepskip}%
   \setcounter{sameline}{0}%
   % redefine \\
   \let\old@nl\\%
