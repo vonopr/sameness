@@ -243,8 +243,8 @@
 % ---------- built‑in demo ----------
 \AtBeginDocument{%
   \ifSAMENESSdemo
-    % Provide only the minimal commands the demo needs.
-    % If you already defined them (e.g. \num), these will be skipped.
+    \begingroup
+    % ---- local fallback definitions (only if not already defined) ----
     \providecommand{\num}[1]{{\texttt{#1}\/}}  % uses the environment’s current font
     \providecommand{\add}[1]{\constructor{add}\hspace*{-1pt}\texttt{1}}
     \providecommand{\zero}{\constructor{zero}}
@@ -284,5 +284,6 @@
         \same[1234] \num6
             \comment{test a 4-digit line number}
     \end{sameness}
+    \endgroup
   \fi
 }
