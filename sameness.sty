@@ -62,6 +62,10 @@
   % Spacing between steps
   stepskip/.initial = {2pt plus 1pt},
   stepskip/.store in   = \SAMENESS@stepskip,
+  % Spacing between line number and the vertical rule
+  numbergap/.store in = \SAMENESS@numbergap,
+  numbergap          = 1em,
+  %
   % Expression font
   % shortcut: exprfont = Family Name  →  sets family only
   exprfont/.style = {/sameness/exprfont/family={#1}},
@@ -208,7 +212,7 @@
           \textsuperscript{##1}%
         \fi
       \fi
-      \hspace{0.5em}%
+      \hspace{\SAMENESS@numbergap}%
     }%
     \ignorespaces
   }%
