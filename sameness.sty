@@ -279,3 +279,100 @@
   \end{sameness}
   \endgroup
 }
+
+
+\endinput
+% ======================================================================
+% QUICK START EXAMPLE
+% ======================================================================
+% Copy the lines below into a new .tex file and compile with LuaLaTeX/XeLaTeX.
+%
+% \documentclass{article}
+% \usepackage{sameness}
+%
+% % Helper macros (if not already defined elsewhere)
+% \newcommand{\num}[1]{\texttt{#1}}
+% \newcommand{\add}[1]{\constructor{add}\hspace*{-1pt}\texttt{1}}
+% \newcommand{\zero}{\constructor{zero}}
+% \newcommand{\whichNat}{\func{which-Nat}}
+% \newcommand{\step}[1]{\func{step-#1}}
+% \newcommand{\constructor}[1]{\textsf{#1}}
+% \newcommand{\func}[1]{\textbf{#1}}
+% \newcommand{\nodef}[1]{\textbf{\textit{#1}}}
+% \newcommand{\type}[1]{\textsf{#1}}
+% \newcommand{\var}[1]{\textsf{\textit{#1}}}
+%
+% \begin{document}
+%   \begin{sameness}
+%     \same (+ \num2 \num4)
+%     \same (\whichNat \num2 \num4 \step{+})
+%     % ... more steps ...
+%   \end{sameness}
+% \end{document}
+%
+% ======================================================================
+% Minimally adjusted package import
+% ======================================================================
+%
+% \documentclass{article}
+%
+% \usepackage{libertine}
+% \usepackage{lmodern}
+% \newcommand{\schoolbookfont}{\fontencoding{T1}\fontfamily{fnc}\selectfont}
+%
+% \usepackage[
+%   unicodesup,
+%   exprfont={Linux Libertine O},
+%   commentfontcmd=schoolbookfont
+% ]{sameness}
+%
+% \begin{document}
+% \noindent
+% This is the demo of a sameness chart:
+%
+% \samenessdemo
+% \end{document}
+%
+% ======================================================================
+% List of support import options
+% ======================================================================
+%
+% sameness provides a numbered evaluation‑step chart environment with
+% automatic left rule and font configuration.
+%
+% -------------------------------------------------------------------
+% Package options    (all with /sameness prefix; pass as key=value)
+% -------------------------------------------------------------------
+%
+% unicodesup     = true | false   (default false)
+%   Use Unicode superscript digits (⁰¹²…) instead of \textsuperscript.
+%
+% stepskip       = <glue>         (default 1ex plus 0.5ex)
+%   Vertical space between steps.
+%
+% numbergap      = <dimen>        (default 0.75em)
+%   Horizontal space between the left rule and the step number.
+%
+% rulethickness  = <dimen>        (default 0.75pt)
+%   Thickness of the continuous left vertical rule.
+%
+% rulesep        = <dimen>        (default 0.5em)
+%   Horizontal gap between left rule and text body.
+%
+% indentstep     = <dimen>        (default 1em)
+%   Amount added/removed by \indentmore and \indentless.
+%
+% exprfont              = <family>  (shortcut)
+% exprfont/family       = <family>
+% exprfont/size         = <command> (default \normalsize)
+% exprfont/shape        = <command> (default \upshape)
+% exprfontcmd           = <command name without \>  (default empty)
+%   Font settings for expression text.
+%   family: system font name or "enc:family".
+%
+% commentfont           = <family>  (shortcut)
+% commentfont/family    = <family>
+% commentfont/size      = <command> (default \footnotesize)
+% commentfont/shape     = <command> (default \itshape)
+% commentfontcmd        = <command name without \>  (default empty)
+%   Font settings for comment text (inside \comment{...}).
