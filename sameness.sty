@@ -1,0 +1,231 @@
+\ProvidesPackage{sameness}
+
+% ---------- required packages ----------
+\RequirePackage{pgfopts}   % for key‑value package options
+\RequirePackage{fontspec}  % for system font loading
+
+% ---------- boolean switches ----------
+\newif\ifSAMENESSdemo
+\newif\ifSAMENESSunicode
+\SAMENESSdemofalse
+\SAMENESSunicodefalse
+
+% ---------- option keys ----------
+\pgfkeys{
+  /sameness/.cd,
+  demo/.is choice,
+  demo/true/.code  = \SAMENESSdemotrue,
+  demo/false/.code = \SAMENESSdemofalse,
+  demo/.default    = true,
+  unicode/.is choice,
+  unicode/true/.code  = \SAMENESSunicodetrue,
+  unicode/false/.code = \SAMENESSunicodefalse,
+  unicode/.default    = true,
+  exprfont/.store in = \SAMENESS@exprfont@spec,
+  exprfont           = {},
+  commentfont/.code = {\pgfkeys{/sameness/commentfont/.cd, #1}},
+  commentfont/family/.store in = \SAMENESS@comment@family@spec,
+  commentfont/family           = {},
+  commentfont/size/.store in   = \SAMENESS@comment@size,
+  commentfont/size             = \footnotesize,
+  commentfont/shape/.store in  = \SAMENESS@comment@shape,
+  commentfont/shape            = \itshape,
+  commentfontcmd/.store in     = \SAMENESS@comment@fontcmd,
+  commentfontcmd               = {},
+}
+
+\ProcessPgfOptions{/sameness}
+
+% ---------- font setup ----------
+\def\SAMENESS@colon{:}
+\newif\ifSAMENESS@systemfont
+
+\def\SAMENESS@parse@fontspec#1{%
+  \SAMENESS@parse@fontspec@aux#1:\@nil
+}
+\def\SAMENESS@parse@fontspec@aux#1:#2\@nil{%
+  \ifx\relax#2\relax
+    \def\SAMENESS@enc{}%
+    \def\SAMENESS@fam{#1}%
+    \SAMENESS@systemfonttrue
+  \else
+    \def\SAMENESS@enc{#1}%
+    \def\SAMENESS@fam{#2}%
+    \SAMENESS@systemfontfalse
+  \fi
+}
+
+\AtBeginDocument{%
+  \let\SAMENESS@exprfont\relax
+  \ifx\SAMENESS@exprfont@spec\@empty\else
+    \SAMENESS@parse@fontspec{\SAMENESS@exprfont@spec}
+    \ifSAMENESS@systemfont
+      \ifx\SAMENESS@fam\@empty\else
+        \newfontfamily\SAMENESS@exprfont{\SAMENESS@fam}
+      \fi
+    \else
+      \edef\SAMENESS@exprfont{%
+        \noexpand\fontencoding{\SAMENESS@enc}%
+        \noexpand\fontfamily{\SAMENESS@fam}%
+        \noexpand\selectfont
+      }%
+    \fi
+  \fi
+  \let\SAMENESS@comment@family\relax
+  \ifx\SAMENESS@comment@fontcmd\@empty
+    \ifx\SAMENESS@comment@family@spec\@empty\else
+      \SAMENESS@parse@fontspec{\SAMENESS@comment@family@spec}
+      \ifSAMENESS@systemfont
+        \ifx\SAMENESS@fam\@empty\else
+          \newfontfamily\SAMENESS@comment@family{\SAMENESS@fam}
+        \fi
+      \else
+        \edef\SAMENESS@comment@family{%
+          \noexpand\fontencoding{\SAMENESS@enc}%
+          \noexpand\fontfamily{\SAMENESS@fam}%
+          \noexpand\selectfont
+        }%
+      \fi
+    \fi
+  \fi
+}
+
+% ---------- indent control ----------
+\newdimen\samelineindent
+\samelineindent=0pt
+\newcommand\indentmore{%
+  \hskip 1em\relax       % immediate space
+  \global\advance\samelineindent by 1em
+}
+\newcommand\indentless{\global\advance\samelineindent by -1em}
+
+% ---------- step counter ----------
+\newcounter{sameline}
+
+% ---------- Unicode superscript digits ----------
+\def\SAMENESS@superdigit#1{%
+  \ifcase#1
+    ⁰\or ¹\or ²\or ³\or ⁴\or ⁵\or ⁶\or ⁷\or ⁸\or ⁹%
+  \fi
+}
+\def\SAMENESS@supernumber#1{%
+  \ifnum#1<10
+    \SAMENESS@superdigit{#1}%
+  \else
+    \ifnum#1<100
+      \SAMENESS@superdigit{\the\numexpr #1/10\relax}%
+      \SAMENESS@superdigit{\the\numexpr #1 - 10*(#1/10)\relax}%
+    \else
+      \ifnum#1<1000
+        \SAMENESS@superdigit{\the\numexpr #1/100\relax}%
+        \SAMENESS@superdigit{\the\numexpr (#1 - 100*(#1/100))/10\relax}%
+        \SAMENESS@superdigit{\the\numexpr #1 - 10*(#1/10)\relax}%
+      \else
+        \ifnum#1<10000
+          \SAMENESS@superdigit{\the\numexpr #1/1000\relax}%
+          \SAMENESS@superdigit{\the\numexpr (#1 - 1000*(#1/1000))/100\relax}%
+          \SAMENESS@superdigit{\the\numexpr (#1 - 100*(#1/100))/10\relax}%
+          \SAMENESS@superdigit{\the\numexpr #1 - 10*(#1/10)\relax}%
+        \else
+          \textsuperscript{#1}%
+        \fi
+      \fi
+    \fi
+  \fi
+}
+
+% ---------- sameness environment ----------
+\newenvironment{sameness}{%
+  \par\noindent
+  \SAMENESS@exprfont
+  \raggedright
+  \setlength{\rightskip}{0pt plus 1fil}%
+  \setlength{\parindent}{0pt}%
+  \setlength{\parskip}{0pt}%
+  \setcounter{sameline}{0}%
+  % redefine \\
+  \let\old@nl\\%
+  \renewcommand{\\}[1][\z@skip]{%
+    \old@nl[##1]%
+    \vbar\,%
+    \hskip\samelineindent\relax
+    \ignorespaces
+  }%
+  % define \same
+  \newcommand{\same}[1][\@empty]{%
+    \ifnum\value{sameline}>0 \par\fi
+    \global\samelineindent=0pt
+    \stepcounter{sameline}%
+    \leavevmode
+    \llap{%
+      \ifx##1\@empty
+        \ifSAMENESSunicode
+          \SAMENESS@supernumber{\arabic{sameline}}%
+        \else
+          \textsuperscript{\arabic{sameline}}%
+        \fi
+      \else
+        \ifSAMENESSunicode
+          \SAMENESS@supernumber{##1}%
+        \else
+          \textsuperscript{##1}%
+        \fi
+      \fi
+      \hspace{0.5em}%
+    }%
+    \vbar\,%
+    \ignorespaces
+  }%
+  % define \comment
+  \let\SAMENESS@comment@font\relax
+  \ifx\SAMENESS@comment@fontcmd\@empty
+    \ifx\SAMENESS@comment@family@spec\@empty
+    \else
+      \let\SAMENESS@comment@font\SAMENESS@comment@family
+    \fi
+  \else
+    \edef\SAMENESS@comment@font{%
+      \expandafter\noexpand\csname \SAMENESS@comment@fontcmd\endcsname
+    }%
+  \fi
+  \def\comment##1{%
+    {\SAMENESS@comment@font\SAMENESS@comment@size\SAMENESS@comment@shape \# ##1}%
+  }%
+  \let\mycustomfont\SAMENESS@exprfont
+  \ignorespaces
+}{%
+  \par
+}
+
+% ---------- built‑in demo ----------
+\AtBeginDocument{%
+    \ifSAMENESSdemo
+        \begin{sameness}
+            \same (+ \num2 \num4)
+            \same (\whichNat \num2 \num4 \step{+}) \comment{expand definition of +}
+            \same (\whichNat (\add1 \add1 \zero) \step{+}) \comment{expand normal form of 2}
+            \same[4] (\step{+} \\
+                \indentmore (\whichNat \num4 (\add1 \zero) \step{+}))
+                \comment{apply 2nd Commandment of iter‑Nat}
+            \same (\add1 \\
+                \indentmore (\whichNat \num4 (\add1 \zero) \step{+}))
+                \comment{apply definition of step‑+ and arg to $\lambda$-expression}
+            \same[6] (\add1 \\
+                \indentmore (\step{+} \\
+                    \indentmore (\whichNat \num4 {\zero} \step{+})))
+                    \comment{apply 2nd Commandment of iter‑Nat}
+            \same (\add1 \\
+                \indentmore (\add1 \\
+                    \indentmore (\whichNat \num4 {\zero} \step{+})))
+                    \comment{apply definition of step‑+ and arg to $\lambda$-expression}
+            \same[8] (\add1 \\
+                \indentmore (\add1 \\
+                    \indentmore  \num4 ))
+                    \comment{apply 1st Commandment of iter‑Nat}
+            \same[9] \num6
+                \comment{common human‑readable representation of \add1...\add1 (6 times) zero}
+            \same[1234] \num6
+                \comment{test a 4-digit line number (¹²³⁴)}
+    \end{sameness}
+  \fi
+}
