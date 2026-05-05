@@ -97,7 +97,10 @@
   \hskip 1em\relax       % immediate space
   \global\advance\samelineindent by 1em
 }
-\newcommand\indentless{\global\advance\samelineindent by -1em}
+\newcommand\indentless{%
+  \hskip -1em\relax
+  \global\advance\samelineindent by -1em
+}
 
 % ---------- step counter ----------
 \newcounter{sameline}
