@@ -11,7 +11,7 @@ Download `sameness.sty` and place it either
 - in your project folder, or
 - somewhere in your `TEXMF` tree (e.g., `~/texmf/tex/latex/sameness/`).
 
-Requires **LuaLaTeX** or **XeLaTeX** (because of `fontspec`).
+Requires **LuaLaTeX** or **XeLaTeX** (due to `fontspec`).
 
 ## Quick start
 
@@ -69,6 +69,9 @@ Requires **LuaLaTeX** or **XeLaTeX** (because of `fontspec`).
 \end{sameness}
 \end{document}
 ```
+
+This results into the following sameness chart:
+<img width="700" height="500" alt="example" src="https://github.com/user-attachments/assets/be5e1a42-1036-4b6a-9563-885d8599ff25" style="height:400%" />
 
 ## Documentation
 
