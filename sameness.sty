@@ -3,7 +3,7 @@
 % "The Little Typer" by Daniel P. Friedman and David Thrane Christiansen.
 %
 % The package produces a left‑ruled, numbered sequence of expressions
-% with automatic indentation, ideal for showing *sameness* derivations.
+% with automatic indentation, used for presenting *sameness* derivations.
 % ======================================================================
 %
 \ProvidesPackage{sameness}
@@ -248,7 +248,7 @@
   \providecommand{\num}[1]{{\texttt{##1}\/}}  % uses the environment’s current font
   \providecommand{\add}[1]{\constructor{add}\hspace*{-1pt}\texttt{1}}
   \providecommand{\zero}{\constructor{zero}}
-  \providecommand{\whichNat}{\func{which-Nat}}
+  \providecommand{\iterNat}{\func{iter-Nat}}
   \providecommand{\step}[1]{\func{step-##1}}
   \providecommand{\constructor}[1]{{\textsf{##1}}}
   \providecommand{\func}[1]{{\textbf{##1}} }
@@ -259,21 +259,21 @@
 
   \begin{sameness}
       \same (+ \num2 \num4)
-      \same (\whichNat \num2 \num4 \step{+}) \comment{expand definition of +}
-      \same (\whichNat (\add1 \add1 \zero) \step{+}) \comment{expand normal form of 2}
+      \same (\iterNat \num2 \num4 \step{+}) \comment{expand definition of +}
+      \same (\iterNat (\add1 \add1 \zero) \num4 \step{+}) \comment{expand normal form of 2}
       \same[4] (\step{+} \\
-          \indentmore (\whichNat \num4 (\add1 \zero) \step{+}))
+          \indentmore (\iterNat (\add1 \zero) \num4 \step{+}))
           \comment{apply 2nd Commandment of iter-Nat}
       \same (\add1 \\
-          \indentmore (\whichNat \num4 (\add1 \zero) \step{+}))
+          \indentmore (\iterNat (\add1 \zero) \num4 \step{+}))
           \comment{apply definition of step-+ and arg to $\lambda$-expression}
       \same[6] (\add1 \\
           \indentmore (\step{+} \\
-              \indentmore (\whichNat \num4 {\zero} \step{+})))
+              \indentmore (\iterNat {\zero} \num4 \step{+})))
           \comment{apply 2nd Commandment of iter-Nat}
       \same (\add1 \\
           \indentmore (\add1 \\
-              \indentmore (\whichNat \num4 {\zero} \step{+})))
+              \indentmore (\iterNat {\zero} \num4 \step{+})))
           \comment{apply definition of step-+ and arg to $\lambda$-expression}
       \same[8] (\add1 \\
           \indentmore (\add1 \\
@@ -282,7 +282,7 @@
       \same[9] \num6
           \comment{common human-readable representation of \add1...\add1 (6 times) zero}
       \same[1234] \num6
-          \comment{test a 4-digit line number}
+          \comment{4-digit line numbers (1234) also work}
   \end{sameness}
   \endgroup
 }
@@ -301,7 +301,7 @@
 % \newcommand{\num}[1]{\texttt{#1}}
 % \newcommand{\add}[1]{\constructor{add}\hspace*{-1pt}\texttt{1}}
 % \newcommand{\zero}{\constructor{zero}}
-% \newcommand{\whichNat}{\func{which-Nat}}
+% \newcommand{\iterNat}{\func{iter-Nat}}
 % \newcommand{\step}[1]{\func{step-#1}}
 % \newcommand{\constructor}[1]{\textsf{#1}}
 % \newcommand{\func}[1]{\textbf{#1}}
@@ -312,7 +312,7 @@
 % \begin{document}
 %   \begin{sameness}
 %     \same (+ \num2 \num4)
-%     \same (\whichNat \num2 \num4 \step{+})
+%     \same (\iterNat \num2 \num4 \step{+})
 %     % ... more steps ...
 %   \end{sameness}
 % \end{document}
